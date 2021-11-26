@@ -34,5 +34,15 @@ stock_price=GetPrices()
 print(portfolio)
 print(list(portfolio.values()))
 data = pd.DataFrame(portfolio.values()).T
-data.plot()
+sortdata = data.sort_index(ascending=True)
+sortdata.plot()
+
+
+totalvalue = sum(portfolio.values())
+print(totalvalue)
+totalvalue.plot()
+plt.title('Portfolio')
+list_legend = list(portfolio.keys())
+list_legend.append("Total value")
+plt.legend(list_legend)
 plt.show()
