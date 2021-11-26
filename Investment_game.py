@@ -24,6 +24,7 @@ def cash_balance():
 
 portfolio= pd.DataFrame()
 portfolio_per_stock=pd.DataFrame()
+portfolio_aantal_stock=pd.DataFrame()
 
 def GetPrices():
     balance=cash_balance()
@@ -41,43 +42,49 @@ def GetPrices():
             print("ticker not found, please try again")
             continue
 
-            data = raw_data['Time Series (Daily)']
-            df = pd.DataFrame(data).T.apply(pd.to_numeric)
-            df.sort_index(ascending=True,inplace=True)
+        numberofstocks = int(input("How many stocks do you want to buy?"))
 
-            purchase_price=df.iloc[0,3]
-            if balance<purchase_price:
-                print("you don't have enough balance to buy this stock")
-                answer = input("Want to continue [y/n]? ")
-                if answer == 'y':
-                    continue
-                else:
-                    break
-            else:
-                balance -= purchase_price
-                print("your remaining balance is:", balance)
+        data = raw_data['Time Series (Daily)']
+        df = pd.DataFrame(data).T.apply(pd.to_numeric)
+        df.sort_index(ascending=True,inplace=True)
 
-            numberofstocks = int(input("How many stocks do you want to buy?"))
-            price_per_stock = df.iloc[:, 3]
-            portfolio_per_stock[ticker] = price_per_stock
-            # portfolio_per_stock['aantal']= numberofstocks
-            price = numberofstocks * price_per_stock
-            portfolio[ticker] = price
+        purchase_price=df.iloc[0,3]
+        if balance<purchase_price:
+            print("you don't have enough balance to buy this stock")
             answer = input("Want to continue [y/n]? ")
             if answer == 'y':
                 continue
             else:
                 break
+        else:
+            balance -= purchase_price
+            print("your remaining balance is:", balance)
 
 
+        price_per_stock = df.iloc[:, 3]
+        portfolio_per_stock[ticker] = price_per_stock
 
+        portfolio_aantal_stock[ticker]= [numberofstocks]
+        price = numberofstocks * price_per_stock
+        portfolio[ticker] = price
+
+        answer = input("Want to continue [y/n]? ")
+        if answer == 'y':
+            continue
+        else:
+            break
+    portfolio['total'] = portfolio.sum(axis=1)
 
 
 stock_price=GetPrices()
-print(portfolio_per_stock)
+print(portfolio_per_stock.iloc[0,:])
+print(portfolio.iloc[0,:])
+print(portfolio_aantal_stock)
 data = pd.merge(portfolio,portfolio_per_stock, left_index=True, right_index=True)
 sortdata = data.sort_index(ascending=True)
+
 print(sortdata)
+print(portfolio)
 
 
 sortdata.plot()
