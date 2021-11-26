@@ -42,14 +42,32 @@ def GetPrices():
             print("ticker not found, please try again")
             continue
 
-        numberofstocks = int(input("How many stocks do you want to buy?"))
-
         data = raw_data['Time Series (Daily)']
         df = pd.DataFrame(data).T.apply(pd.to_numeric)
         df.sort_index(ascending=True,inplace=True)
+        while True:
+            try:
+                numberofstocks = int(input("How many stocks do you want to buy?"))
+                break
+            except:
+                print("This is not a number, please fill in a number ")
+                continue
+
+        if numberofstocks <= 0:
+            while numberofstocks <= 0:
+                try:
+                    numberofstocks = int(input("Please fill in a positive number "))
+                except:
+                    print("This is not a number, please fill in a number")
+                    continue
+        price_per_stock = df.iloc[:, 3]
+        portfolio_per_stock[ticker] = price_per_stock
+        portfolio_aantal_stock[ticker]= [numberofstocks]
+        price = numberofstocks * price_per_stock
+        portfolio[ticker] = price
 
         purchase_price=df.iloc[0,3]
-        if balance<purchase_price:
+        if balance<numberofstocks*purchase_price:
             print("you don't have enough balance to buy this stock")
             answer = input("Want to continue [y/n]? ")
             if answer == 'y':
@@ -57,24 +75,14 @@ def GetPrices():
             else:
                 break
         else:
-            balance -= purchase_price
+            balance -= numberofstocks * purchase_price
             print("your remaining balance is:", balance)
-
-
-        price_per_stock = df.iloc[:, 3]
-        portfolio_per_stock[ticker] = price_per_stock
-
-        portfolio_aantal_stock[ticker]= [numberofstocks]
-        price = numberofstocks * price_per_stock
-        portfolio[ticker] = price
-
         answer = input("Want to continue [y/n]? ")
         if answer == 'y':
             continue
         else:
             break
     portfolio['total'] = portfolio.sum(axis=1)
-
 
 stock_price=GetPrices()
 print(portfolio_per_stock.iloc[0,:])
