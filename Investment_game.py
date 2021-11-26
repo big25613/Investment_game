@@ -5,10 +5,29 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 
+def cash_balance():
+    while True:
+        try:
+            cash_balance=float(input("What amount of money would you like to invest? "))
+            if cash_balance <= 0:
+                while cash_balance <= 0:
+                    try:
+                        cash_balance = float(input("Please fill in a positive number "))
+                    except:
+                        print("Amount not found, please fill in a number")
+                        continue
+            break
+        except:
+            print("Amount not found, please fill in a number")
+            continue
+    return cash_balance
+
 portfolio= pd.DataFrame()
 portfolio_per_stock=pd.DataFrame()
 
 def GetPrices():
+    balance=cash_balance()
+    print("The balance on your account is:",balance)
     while True:
         ticker=input("Give a ticker: ")
         response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="+ticker+"&apikey=G2NO055HSLUUAZWI")
@@ -22,21 +41,36 @@ def GetPrices():
             print("ticker not found, please try again")
             continue
 
-        numberofstocks = int(input("How many stocks do you want to buy?"))
-        data = raw_data['Time Series (Daily)']
-        df = pd.DataFrame(data).T.apply(pd.to_numeric)
-        price_per_stock = df.iloc[:, 3]
+            data = raw_data['Time Series (Daily)']
+            df = pd.DataFrame(data).T.apply(pd.to_numeric)
+            df.sort_index(ascending=True,inplace=True)
 
-        portfolio_per_stock[ticker] = price_per_stock
-        # portfolio_per_stock['aantal']= numberofstocks
-        price = numberofstocks*price_per_stock
-        portfolio[ticker]= price
+            purchase_price=df.iloc[0,3]
+            if balance<purchase_price:
+                print("you don't have enough balance to buy this stock")
+                answer = input("Want to continue [y/n]? ")
+                if answer == 'y':
+                    continue
+                else:
+                    break
+            else:
+                balance -= purchase_price
+                print("your remaining balance is:", balance)
 
-        answer = input("Want to continue [y/n]? ")
-        if answer == 'y':
-            continue
-        else:
-            break
+            numberofstocks = int(input("How many stocks do you want to buy?"))
+            price_per_stock = df.iloc[:, 3]
+            portfolio_per_stock[ticker] = price_per_stock
+            # portfolio_per_stock['aantal']= numberofstocks
+            price = numberofstocks * price_per_stock
+            portfolio[ticker] = price
+            answer = input("Want to continue [y/n]? ")
+            if answer == 'y':
+                continue
+            else:
+                break
+
+
+
 
 
 stock_price=GetPrices()
