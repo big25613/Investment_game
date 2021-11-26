@@ -26,7 +26,7 @@ def GetPrices():
     while True:
         try:
             ticker=input("Give a ticker: ")
-            response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="+ticker+"&apikey=demo")
+            response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="+ticker+"&apikey=G2NO055HSLUUAZWI")
 
             # Since we are retrieving stuff from a web service, it's a good idea to check for the return status code
             # See: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
