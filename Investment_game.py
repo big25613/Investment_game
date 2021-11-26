@@ -50,10 +50,18 @@ import matplotlib.pyplot as plt
 def cash_balance ():
     while True:
         try:
-            cash_balance=input("What amount of money would you like to invest? ")
-            print("Your cash balance is $", float(cash_balance))
+            cash_balance=float(input("What amount of money would you like to invest? "))
+            if cash_balance <= 0:
+                while cash_balance <= 0:
+                    try:
+                        cash_balance = float(input("Please fill in a positive number "))
+                    except:
+                        print("Amount not found, please fill in a number")
+                        continue
             break
         except:
             print("Amount not found, please fill in a number")
             continue
-cash_balance()
+    return cash_balance
+balance=cash_balance()
+print("Your cash balance is $", float(balance))
