@@ -46,3 +46,5 @@ list_legend = list(portfolio.keys())
 list_legend.append("Total value")
 plt.legend(list_legend)
 plt.show()
+
+test
