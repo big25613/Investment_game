@@ -36,9 +36,40 @@ class Portfolio:
                 continue
         return cash_balance
 
+    def sellstocks():
+        while True:
+            ticker=input("Which stock from your portfolio would you like to sell? ")
+            if ticker in list(portfolio_aantal_stock.columns):
+                print("You have", int(portfolio_aantal_stock[ticker]) , "stocks in your portfolio")
+                while True:
+                    try:
+                        sell=int(input("How many stocks would you like to sell? "))
+                        if sell > int(portfolio_aantal_stock[ticker]):
+                            print("You don't have this amount of stocks")
+                            continue
+                        elif sell <= 0:
+                            print("Please fill in a positive number ")
+                            continue
+                        else:
+                            break
+                    except:
+                        print("Please fill in a number ")
+                        continue
+            else:
+                decision=input("We could not find this ticker in your portfolio, would you like to try again [y/n]? ")
+                if decision == "y":
+                    continue
+                else:
+                    break
+            sellstock2=input("Would you like to sell another stock [y/n]? ")
+            if sellstock2 == "y":
+                continue
+            else:
+                break
+
+
     def GetPrices():
         balance=Portfolio.cash_balance()
-
         print("The balance on your account is:",balance)
         while True:
             ticker=input("Give a ticker: ")
