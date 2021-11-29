@@ -6,70 +6,69 @@ from plotly.subplots import make_subplots
 
 class Person:
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, portfolio):
         self.username = username
         self.password = password
-
-
-#portfolio_db = [Portfolio(...), Portfolio(...)]
-persons_db = [Person("marjolein", "marjolein"),Person("GyungJu","GyungJu")]
-
-portfolio= pd.DataFrame()
-portfolio_per_stock=pd.DataFrame()
-portfolio_aantal_stock=pd.DataFrame()
+        self.portfolio = portfolio
 
 class Portfolio:
-    def cash_balance():
-        while True:
-            try:
-                cash_balance=float(input("What amount of money would you like to invest? "))
-                if cash_balance <= 0:
-                    while cash_balance <= 0:
-                        try:
-                            cash_balance = float(input("Please fill in a positive number "))
-                        except:
-                            print("Amount not found, please fill in a number")
-                            continue
-                break
-            except:
-                print("Amount not found, please fill in a number")
-                continue
-        return cash_balance
+    def __init__(self, cash_balance = 10000):
+        self.cash_balance = cash_balance
+        self.portfolio = pd.DataFrame()
+        self.portfolio_per_stock = pd.DataFrame()
+        self.portfolio_aantal_stock = pd.DataFrame()
 
-    def sellstocks():
-        while True:
-            ticker=input("Which stock from your portfolio would you like to sell? ")
-            if ticker in list(portfolio_aantal_stock.columns):
-                print("You have", int(portfolio_aantal_stock[ticker]) , "stocks in your portfolio")
-                while True:
-                    try:
-                        sell=int(input("How many stocks would you like to sell? "))
-                        if sell > int(portfolio_aantal_stock[ticker]):
-                            print("You don't have this amount of stocks")
-                            continue
-                        elif sell <= 0:
-                            print("Please fill in a positive number ")
-                            continue
-                        else:
-                            break
-                    except:
-                        print("Please fill in a number ")
-                        continue
-            else:
-                decision=input("We could not find this ticker in your portfolio, would you like to try again [y/n]? ")
-                if decision == "y":
-                    continue
-                else:
-                    break
-            sellstock2=input("Would you like to sell another stock [y/n]? ")
-            if sellstock2 == "y":
-                continue
-            else:
-                break
+    # def cash_balance(self):
+    #     while True:
+    #         try:
+    #             cash_balance=float(input("What amount of money would you like to invest? "))
+    #             if cash_balance <= 0:
+    #                 while cash_balance <= 0:
+    #                     try:
+    #                         cash_balance = float(input("Please fill in a positive number "))
+    #                     except:
+    #                         print("Amount not found, please fill in a number")
+    #                         continue
+    #             break
+    #         except:
+    #             print("Amount not found, please fill in a number")
+    #             continue
+    #     return cash_balance
+
+    # def sellstocks(self):
+    #     while True:
+    #         ticker=input("Which stock from your portfolio would you like to sell? ")
+    #         if ticker in list(portfolio_aantal_stock.columns):
+    #             print("You have", int(portfolio_aantal_stock[ticker]) , "stocks in your portfolio")
+    #             while True:
+    #                 try:
+    #                     sell=int(input("How many stocks would you like to sell? "))
+    #                     if sell > int(portfolio_aantal_stock[ticker]):
+    #                         print("You don't have this amount of stocks")
+    #                         continue
+    #                     elif sell <= 0:
+    #                         print("Please fill in a positive number ")
+    #                         continue
+    #                     else:
+    #                         break
+    #                 except:
+    #                     print("Please fill in a number ")
+    #                     continue
+    #         else:
+    #             decision=input("We could not find this ticker in your portfolio, would you like to try again [y/n]? ")
+    #             if decision == "y":
+    #                 continue
+    #             else:
+    #                 break
+    #         sellstock2=input("Would you like to sell another stock [y/n]? ")
+    #         if sellstock2 == "y":
+    #             continue
+    #         else:
+    #             break
 
 
-    def GetPrices():
-        balance=Portfolio.cash_balance()
+    def buystocks(self):
+        balance= self.cash_balance
         print("The balance on your account is:",balance)
         while True:
             ticker=input("Give a ticker: ")
@@ -161,6 +160,16 @@ class Portfolio:
 
         fig.show()
 
+portfolio_db = [Portfolio(100), Portfolio(200)]
+persons_db = [Person("marjolein", "marjolein", portfolio_db[0]),Person("GyungJu","GyungJu", portfolio_db[1])]
+
+portfolio= pd.DataFrame()
+portfolio_per_stock=pd.DataFrame()
+portfolio_aantal_stock=pd.DataFrame()
+
+
+
+
 
 
 
@@ -179,7 +188,7 @@ def check_password(username):
         password = input("What is your password?")
         for p in persons_db:
             if p.username == username and p.password == password:
-                stock_price = Portfolio.GetPrices()
+                stock_price = p.portfolio.buystocks()
                 data = pd.merge(portfolio, portfolio_per_stock, left_index=True, right_index=True)
                 sortdata = data.sort_index(ascending=True)
             elif p.username != username:
