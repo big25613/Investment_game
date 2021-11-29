@@ -85,43 +85,45 @@ def GetPrices():
     portfolio['total'] = portfolio.sum(axis=1)
 
 stock_price=GetPrices()
-print(portfolio_per_stock.iloc[0,:])
-print(portfolio.iloc[0,:])
-print(portfolio_aantal_stock)
 data = pd.merge(portfolio,portfolio_per_stock, left_index=True, right_index=True)
 sortdata = data.sort_index(ascending=True)
 
-print(sortdata)
-print(portfolio)
 
 
-sortdata.plot()
-plt.title('Portfolio')
-plt.show()
+# sortdata.plot()
+# plt.title('Portfolio')
+# plt.show()
+
+fig = make_subplots(
+    rows=2, cols=1,
+    vertical_spacing=0.03,
+    specs=[[{"type": "table"}],
+           [{"type": "scatter"}]]
+)
 
 
-# fig = make_subplots(rows=2, cols=1, vertical_spacing=0.03, specs=[[{"type": "table"}],[{"type": "scatter"}]])
-#
-# fig.add_trace(go.Scatter(x=sortdata["MSFT_x"],mode="lines",),row=2, col=1)
-#
-# fig.add_trace(
-# go.Table(
-#     header=dict(values=['MSFT'],
-#                 line_color='darkslategray',
-#                 fill_color='lightskyblue',
-#                 align='left'),
-#     cells=dict(values=[sortdata.MSFT_x],
-#                line_color='darkslategray',
-#                fill_color='lightcyan',
-#                align='left')),
-#     row=1, col=1
-# )
-#
-# fig.update_layout(
-#     height=500,
-#     width = 500,
-#     showlegend=False,
-#     title_text="Portfolio",
-# )
-#
-# fig.show()
+for i in range(0, len(portfolio.columns)):
+    fig.add_trace(
+        go.Scatter(x= portfolio.index, y=portfolio.iloc[:,i],
+                        mode='lines', name=portfolio.columns[i]),
+        row=2, col=1
+    )
+
+
+for i in range(0, len(portfolio_per_stock.columns)):
+    fig.add_trace(
+        go.Table(
+        header=dict(values=["Stocks in portfolio", "Number of Stock in portfolio", "Price per stock", "Total Value"],
+                    line_color='darkslategray',
+                    fill_color='lightskyblue',
+                    align='left'),
+        cells=dict(values=[portfolio_per_stock.columns, list(portfolio_aantal_stock.iloc[0,:]), list(portfolio_per_stock.iloc[0,:]), list(portfolio.iloc[0,:])],
+                   line_color='darkslategray',
+                   fill_color='lightcyan',
+                   align='left')),
+        row=1, col=1
+    )
+
+fig.show()
+
+
